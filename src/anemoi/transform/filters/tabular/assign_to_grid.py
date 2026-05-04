@@ -43,6 +43,7 @@ class AssignToGrid(Filter):
 
     def forward(self, obs_df: pd.DataFrame) -> pd.DataFrame:
         from anemoi.transform.filters.tabular.support.superob import define_grid
+        from anemoi.transform.filters.tabular.support.superob import define_grid_from_template
         from anemoi.transform.filters.tabular.support.superob import define_healpix_grid
 
         # Define output grid based on grid type
@@ -50,6 +51,8 @@ class AssignToGrid(Filter):
             # Healpix grid
             nside = int(self.grid[1:])
             grid_points = define_healpix_grid(nside)
+        elif self.grid.endswith("npz"):
+            grid_points = define_grid_from_template(self.grid)
         else:
             # Regular grid (N320, O1280, etc.)
             grid_points = define_grid(self.grid)
