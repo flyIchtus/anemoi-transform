@@ -45,9 +45,7 @@ class TimeGrid(Filter):
         self.rounding = rounding
 
     def forward(self, df: pd.DataFrame) -> pd.DataFrame:
-
-      df = df.copy()
-
+      
       time_start = df["date"].min()
       time_end = df["date"].max()
 
@@ -61,7 +59,7 @@ class TimeGrid(Filter):
     
       time_start = df["date"].min()
       time_end = df["date"].max()
-
+    
       time_grid = time_grid.to_pydatetime()
       time_references = np.where((temporal_indices)==0, time_grid[0], time_grid[0])
 
