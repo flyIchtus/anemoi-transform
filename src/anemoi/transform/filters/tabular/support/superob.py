@@ -98,14 +98,16 @@ def assign_vertical_grid(df: pd.DataFrame, vertical_grid: np.ndarray, height_col
     tree = cKDTree(vertical_grid)
 
     # Find nearest spatial grid points
-    distances, _ = tree.query(df[height_column].values[:,np.newaxis])
+    distances, vertical_indices = tree.query(df[height_column].values[:,np.newaxis])
 
-    df2 = df.assign(
-        distance=distances,
+    # reassign to nearest
+    df = df.assign(
+        **{'distance' : distances,
+        height_column : vertical_grid[vertical_indices]
+        }
     )
 
     if rejection:
-        df2 = df2.loc[df2['distance'] <= tolerance]
-    df2 = df2.drop(columns=['distance'])
-    # Assign both columns at once using assign
-    return df2
+        df = df.loc[df['distance'] <= tolerance]
+    df = df.drop(columns=['distance'])
+    return df
