@@ -87,3 +87,25 @@ def assign_nearest_grid(df: pd.DataFrame, grid_points: np.ndarray, time_slot_len
         spatial_index=spatial_indices,
         distance=distances,
     )
+
+def define_vertical_grid_from_template(grid_path: str, height_column: str) -> np.ndarray:
+    # Make an explicit copy at the start
+    return np.load(grid_path)[height_column][:,np.newaxis]
+
+def assign_vertical_grid(df: pd.DataFrame, vertical_grid: np.ndarray, height_column: str, tolerance: float = 1.0, rejection=True) -> pd.DataFrame:
+    # Make an explicit copy at the start
+    df = df.copy()
+    tree = cKDTree(vertical_grid)
+
+    # Find nearest spatial grid points
+    distances, _ = tree.query(df[height_column].values[:,np.newaxis])
+
+    df2 = df.assign(
+        distance=distances,
+    )
+
+    if rejection:
+        df2 = df2.loc[df2['distance'] <= tolerance]
+    df2 = df2.drop(columns=['distance'])
+    # Assign both columns at once using assign
+    return df2
