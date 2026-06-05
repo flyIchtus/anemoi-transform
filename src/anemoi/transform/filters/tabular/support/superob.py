@@ -106,7 +106,10 @@ def assign_vertical_grid(df: pd.DataFrame, vertical_grid: np.ndarray, height_col
         height_column : vertical_grid[vertical_indices]
         }
     )
-
+    #nearest_idx = df["distance"].idxmin()
+    #print(nearest_idx)
+    #nearest_df = df.loc[nearest_idx].set_index()
+    #print(nearest_df.head())
     if rejection:
         df = df.loc[df['distance'] <= tolerance]
     df = df.drop(columns=['distance'])

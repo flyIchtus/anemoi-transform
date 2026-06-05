@@ -17,8 +17,8 @@ from anemoi.transform.filters.tabular import filter_registry
 from anemoi.transform.filters.tabular.support.utils import raise_if_df_missing_cols
 
 
-@filter_registry.register("pressure_to_height_oaci_tabular")
-class PressureToHeightOACI(Filter):
+@filter_registry.register("height_to_pressure_oaci_tabular")
+class HeightToPressureOACI(Filter):
     """Converts height (in meters) to pressure using the OACI convention.
 
     The ``height`` config key defines the name of the column containing
@@ -45,6 +45,7 @@ class PressureToHeightOACI(Filter):
         self.height = height
         self.pressure = pressure if pressure else height
         self.drop_height = drop_height
+
     def forward(self, obs_df: pd.DataFrame) -> pd.DataFrame:
         raise_if_df_missing_cols(obs_df, [self.height])
         logging.info("Converting height to pressure")
