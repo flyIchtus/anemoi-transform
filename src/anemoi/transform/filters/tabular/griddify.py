@@ -36,7 +36,6 @@ class GriddifyFromSuperOb(Filter):
         self.template = ekd.from_source("file", grib_template)[0]
         coords = np.load(grid_template)
         self.latitudes, self.longitudes = coords['latitude'], coords['longitude']
-        print(self.latitudes, len(self.latitudes))
         self.length = len(self.latitudes)
 
     def forward(self, frame):
@@ -47,7 +46,6 @@ class GriddifyFromSuperOb(Filter):
 
         for col in value_columns:
             for date, group in frame.groupby("date"):
-                print(col, date)
                 # Only keep relevant columns for this variable and date
                 df = group[["date", "latitude", "longitude", "spatial_index", col]]
                 gridded_values = np.full(self.length, np.nan, dtype="float32")
