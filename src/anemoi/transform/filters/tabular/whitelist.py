@@ -84,7 +84,7 @@ class WhiteList(Filter):
                 with open(filename,'r') as f:
                     whitelist_data = yaml.safe_load(f)
 
-                start_dt, end_dt = iso8601_to_datetime(start), iso8601_to_datetime(end)
+                start_dt, end_dt = (start.to_pydatetime()), (end.to_pydatetime())
                 periods = whitelist_data.keys()
                 found_period = False
                 for period in periods:
