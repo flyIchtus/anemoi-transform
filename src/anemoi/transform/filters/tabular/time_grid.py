@@ -40,10 +40,12 @@ class TimeGrid(Filter):
         self,
         *,
         timeslot_length: int,
-        rounding: str | None = None
+        rounding: str | None = None,
+        subsample: str | None = None,
     ):
         self.timeslot_length = timeslot_length
         self.rounding = rounding
+        self.subsample = subsample
 
     def forward(self, df: pd.DataFrame) -> pd.DataFrame:
       
@@ -53,7 +55,17 @@ class TimeGrid(Filter):
       # rounding to next rounding slot (no backward in time)
       # shifting start to break tie
       time_start = time_start + dt.timedelta(microseconds=1)
+      if self.subsample:
+          from scipy.spatial import cKDTree
 
+          delta = dt.timedelta(seconds=self.subsample)
+          subsample_grid = pd.date_range(time_start, time_end, freq=delta)
+
+          tree = cKDTree((subsample_grid.values.astype('int64')// 10**9).reshape(-1,1))
+          distances, _ = tree.query((df['date'].values.astype('int64') // 10**9).reshape(-1,1))
+          df = df.assign(temporal_distance=distances)
+          df = df.loc[df["temporal_distance"]<=1]
+          df = df.drop(columns=['temporal_distance'])
       # Create time grid
       time_grid = pd.date_range(time_start, time_end, freq=f"{self.timeslot_length}s")
       if self.rounding is not None:
