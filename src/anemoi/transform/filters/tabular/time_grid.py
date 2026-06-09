@@ -7,6 +7,7 @@
 # granted to it by virtue of its status as an intergovernmental organisation
 # nor does it submit to any jurisdiction.
 
+import datetime as dt
 import numpy as np
 import pandas as pd
 
@@ -46,8 +47,12 @@ class TimeGrid(Filter):
 
     def forward(self, df: pd.DataFrame) -> pd.DataFrame:
       
-      time_start = df["date"].min()
+      time_start = df["date"].min().to_pydatetime()
       time_end = df["date"].max()
+
+      # rounding to next rounding slot (no backward in time)
+      # shifting start to break tie
+      time_start = time_start + dt.timedelta(microseconds=1)
 
       # Create time grid
       time_grid = pd.date_range(time_start, time_end, freq=f"{self.timeslot_length}s")
@@ -67,5 +72,4 @@ class TimeGrid(Filter):
           time_references = np.where((temporal_indices)==ti, time_grid[ti], time_references)
 
       df = df.assign(date=time_references)
-
       return df

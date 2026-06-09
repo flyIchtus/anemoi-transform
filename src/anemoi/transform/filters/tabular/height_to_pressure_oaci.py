@@ -50,7 +50,7 @@ class HeightToPressureOACI(Filter):
         raise_if_df_missing_cols(obs_df, [self.height])
         logging.info("Converting height to pressure")
         obs_df[self.pressure] = obs_df[self.height].apply(
-            lambda x: 1013.25 * (1 - 0.0065 * x / 288.15) ** 5.255
+            lambda x: round(1013.25 * (1 - 0.0065 * x / 288.15) ** 5.255)
         )
         if self.drop_height:
             obs_df = obs_df.drop(columns=[self.height])
