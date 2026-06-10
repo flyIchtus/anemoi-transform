@@ -17,7 +17,7 @@ from anemoi.transform.filters.tabular import filter_registry
 from anemoi.transform.filters.tabular.support.utils import raise_if_df_missing_cols
 
 
-@filter_registry.register("height_to_pressure_oaci_tabular")
+@filter_registry.register("height_to_pressure_icao_tabular")
 class HeightToPressureICAO(Filter):
     """Converts height (in meters) to pressure using the ICAO convention.
 
